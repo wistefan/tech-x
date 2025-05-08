@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: traefik
+  namespace: infra
+  labels:
+    app.kubernetes.io/name: traefik
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: traefik
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: traefik
+    spec:
+      containers:
+        - name: traefik
+          image: traefik:v2.6.0
+          imagePullPolicy: IfNotPresent
+          args:
+            - --configFile=/etc/traefik/traefik.yaml
+          ports:
+            - name: http
+              containerPort: 8080
+            - name: https
+              containerPort: 443
+            - name: admin
+              containerPort: 8090
+          startupProbe:
+            httpGet:
+              path: /ping
+              port: admin
+            initialDelaySeconds: 1
+            periodSeconds: 1
+            successThreshold: 1
+            failureThreshold: 60
+          readinessProbe:
+            httpGet:
+              path: /ping
+              port: admin
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: admin
+          securityContext:
+            runAsUser: 10001
+            runAsGroup: 10001
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - mountPath: "/ssl-certs/tls.key"
+              name: tls-cert
+              subPath: tls.key
+            - mountPath: "/ssl-certs/tls.crt"
+              name: tls-cert
+              subPath: tls.crt
+            - mountPath: "/config/tls.yaml"
+              name: tls-config
+              subPath: tls.yaml
+            - mountPath: "/etc/traefik/traefik.yaml"
+              name: config
+              subPath: traefik.yaml
+      volumes:
+        - name: tls-cert
+          secret:
+            secretName: local-wildcard
+        - name: tls-config
+          configMap:
+            name: tls-config
+        - name: config
+          configMap:
+            name: traefik-config
+      serviceAccountName: traefik
+      terminationGracePeriodSeconds: 0
