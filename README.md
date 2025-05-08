@@ -179,6 +179,10 @@ Present the token:
 ### PAP
 
 ```shell
+    kubectl port-forward <odrl-pap> 9090:8080 -n trust-anchor
+```
+
+```shell
 curl -X 'POST' http://localhost:9090/policy \
     -H 'Content-Type: application/json' \
     -d '...' 
