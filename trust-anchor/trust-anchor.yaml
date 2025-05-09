@@ -1,7 +1,7 @@
 trusted-issuers-list:
   deployment:
     image:
-      tag: 0.2.2-PRE-10
+      tag: 0.2.2
       pullPolicy: Always
   # -- it should work as the TrustedIssuersRegistry of the dataspace, thus we publish this api only
   ingress:
