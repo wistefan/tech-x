@@ -56,6 +56,8 @@ An automated On-Boarding could use the following steps:
 
 ## Setup Hackathon Environment
 
+> :warning: In order to properly run all tools, a Linux based system is recommended. To check if you have all tools available, run the [./check_tools.sh script](check_tools.sh)
+
 The FIWARE Data Space Connector uses a microservice archictecture that is best suited to run in a Kuberentes cluster. To have local environment as a test setting, a k3s cluster with basic infrastructure can be created via:
 
 ```shell   
@@ -249,7 +251,7 @@ Get access to the API:
 ```
 
 Create the Policy:
-```shell
+```shellhttps://www.w3.org/TR/vc-data-model-2.0/#verifiable-presentations
 curl -X 'POST' http://localhost:9090/policy \
     -H 'Content-Type: application/json' \
     -d '<THE_POLICY>' 
